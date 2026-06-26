@@ -1,0 +1,107 @@
+import { useState } from 'react';
+import { Box, Container, Typography, Chip, Accordion, AccordionSummary, AccordionDetails, Grid, Card, CardContent, Avatar, Button } from '@mui/material';
+import { ExpandMore, HelpOutline, Phone, Email } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
+
+const faqs = [
+  {
+    category: 'Dịch vụ',
+    questions: [
+      { q: 'ElderCare cung cấp những dịch vụ gì?', a: 'ElderCare cung cấp dịch vụ quản lý chăm sóc người cao tuổi toàn diện bao gồm: theo dõi chỉ số sức khỏe 24/7, quản lý thuốc và nhắc nhở uống thuốc, lập kế hoạch chăm sóc cá nhân hóa, điều phối nhân viên chăm sóc chuyên nghiệp, và kết nối gia đình qua ứng dụng.' },
+      { q: 'Dịch vụ có hoạt động 24/7 không?', a: 'Có, hệ thống giám sát và cảnh báo của ElderCare hoạt động liên tục 24/7. Đội ngũ hỗ trợ kỹ thuật cũng sẵn sàng trong giờ hành chính và hỗ trợ khẩn cấp ngoài giờ.' },
+      { q: 'Tôi có thể dùng thử trước khi đăng ký không?', a: 'Có! Chúng tôi cung cấp 30 ngày dùng thử miễn phí với đầy đủ tính năng. Không cần thẻ tín dụng, không cam kết dài hạn.' },
+    ],
+  },
+  {
+    category: 'Thanh toán',
+    questions: [
+      { q: 'Có những gói dịch vụ nào và giá bao nhiêu?', a: 'Chúng tôi có 3 gói: Cơ bản (2.500.000đ/tháng), Tiêu chuẩn (5.000.000đ/tháng) và Cao cấp (8.000.000đ/tháng). Mỗi gói có các tính năng và mức độ hỗ trợ khác nhau. Xem chi tiết tại trang Dịch vụ.' },
+      { q: 'Phương thức thanh toán nào được chấp nhận?', a: 'Chúng tôi chấp nhận thanh toán qua chuyển khoản ngân hàng, thẻ tín dụng/ghi nợ (Visa, Mastercard), ví điện tử (MoMo, ZaloPay) và tiền mặt tại văn phòng.' },
+      { q: 'Có thể hủy hợp đồng bất kỳ lúc nào không?', a: 'Có, bạn có thể hủy dịch vụ bất kỳ lúc nào mà không phát sinh phí phạt. Dịch vụ sẽ tiếp tục đến hết kỳ thanh toán hiện tại.' },
+    ],
+  },
+  {
+    category: 'Kỹ thuật',
+    questions: [
+      { q: 'Thiết bị nào được hỗ trợ?', a: 'Ứng dụng ElderCare hỗ trợ đầy đủ trên điện thoại iOS và Android, máy tính bảng, và trình duyệt web trên máy tính. Giao diện tự động điều chỉnh phù hợp với từng thiết bị.' },
+      { q: 'Dữ liệu sức khỏe có được bảo mật không?', a: 'Tuyệt đối. Toàn bộ dữ liệu được mã hóa end-to-end, lưu trữ trên máy chủ đạt chuẩn ISO 27001. Chúng tôi tuân thủ nghiêm ngặt các quy định về bảo vệ dữ liệu cá nhân.' },
+      { q: 'Khi có sự cố kỹ thuật thì liên hệ ai?', a: 'Bạn có thể liên hệ đội ngũ hỗ trợ kỹ thuật qua hotline 1800 1234 (miễn phí), email support@eldercare.vn hoặc chat trực tiếp trong ứng dụng. Thời gian phản hồi trung bình là dưới 2 giờ.' },
+    ],
+  },
+  {
+    category: 'Nhân viên',
+    questions: [
+      { q: 'Nhân viên chăm sóc được đào tạo như thế nào?', a: 'Tất cả nhân viên đều được đào tạo bài bản về kỹ năng chăm sóc người cao tuổi, sơ cứu cơ bản, và sử dụng hệ thống. Họ được đánh giá định kỳ và tham gia các khóa đào tạo nâng cao thường xuyên.' },
+      { q: 'Tôi có được chọn nhân viên chăm sóc không?', a: 'Có, bạn hoàn toàn có quyền xem hồ sơ và lựa chọn nhân viên phù hợp. Nếu không hài lòng, chúng tôi sẽ tìm người thay thế trong vòng 24 giờ.' },
+    ],
+  },
+];
+
+export default function FAQPage() {
+  const [expanded, setExpanded] = useState<string | false>(false);
+  const navigate = useNavigate();
+
+  return (
+    <Box>
+      <Box sx={{ background: 'linear-gradient(135deg, #0F172A, #1E3A5F)', py: 10, textAlign: 'center' }}>
+        <Container maxWidth="md">
+          <Chip label="FAQ" sx={{ bgcolor: 'rgba(37,99,235,0.2)', color: '#93C5FD', fontWeight: 600, mb: 3 }} />
+          <Typography variant="h2" fontWeight={800} color="#fff" mb={2}>Câu hỏi thường gặp</Typography>
+          <Typography color="#94A3B8" fontSize={17}>Tìm câu trả lời cho những thắc mắc phổ biến nhất</Typography>
+        </Container>
+      </Box>
+
+      <Box sx={{ py: 8, bgcolor: '#F8FAFC' }}>
+        <Container maxWidth="md">
+          {faqs.map((section) => (
+            <Box key={section.category} mb={4}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 2.5 }}>
+                <Box sx={{ width: 4, height: 24, borderRadius: '2px', background: 'linear-gradient(135deg,#2563EB,#7C3AED)' }} />
+                <Typography fontWeight={800} fontSize={18} color="#0F172A">{section.category}</Typography>
+              </Box>
+              {section.questions.map((item, i) => (
+                <Accordion key={i} expanded={expanded === `${section.category}-${i}`}
+                  onChange={(_, v) => setExpanded(v ? `${section.category}-${i}` : false)}
+                  sx={{ mb: 1.5, borderRadius: '14px !important', border: '1px solid #E2E8F0', boxShadow: 'none', '&:before': { display: 'none' }, '&.Mui-expanded': { boxShadow: '0 4px 20px rgba(37,99,235,0.1)', borderColor: '#BFDBFE' } }}>
+                  <AccordionSummary expandIcon={<ExpandMore sx={{ color: '#64748B' }} />} sx={{ px: 3, py: 0.5, '& .MuiAccordionSummary-content': { my: 1.5 } }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                      <HelpOutline sx={{ fontSize: 18, color: '#2563EB', flexShrink: 0 }} />
+                      <Typography fontWeight={600} fontSize={14.5} color="#0F172A">{item.q}</Typography>
+                    </Box>
+                  </AccordionSummary>
+                  <AccordionDetails sx={{ px: 3, pt: 0, pb: 2.5 }}>
+                    <Box sx={{ pl: 3.5, borderLeft: '2px solid #BFDBFE' }}>
+                      <Typography color="text.secondary" fontSize={14} lineHeight={1.8}>{item.a}</Typography>
+                    </Box>
+                  </AccordionDetails>
+                </Accordion>
+              ))}
+            </Box>
+          ))}
+
+          {/* Still have questions */}
+          <Card sx={{ borderRadius: '20px', background: 'linear-gradient(135deg, #0F172A, #1E3A5F)', mt: 4, border: 'none', boxShadow: 'none' }}>
+            <CardContent sx={{ p: 4, textAlign: 'center' }}>
+              <Typography variant="h5" fontWeight={800} color="#fff" mb={1}>Vẫn còn thắc mắc?</Typography>
+              <Typography color="#94A3B8" fontSize={15} mb={3}>Đội ngũ hỗ trợ của chúng tôi luôn sẵn sàng giải đáp</Typography>
+              <Grid container spacing={2} justifyContent="center">
+                <Grid item xs={12} sm="auto">
+                  <Button variant="contained" startIcon={<Phone />} onClick={() => navigate('/contact')}
+                    sx={{ background: 'linear-gradient(135deg,#2563EB,#7C3AED)', fontWeight: 700, px: 3, py: 1.5, borderRadius: '12px' }}>
+                    Gọi 1800 1234
+                  </Button>
+                </Grid>
+                <Grid item xs={12} sm="auto">
+                  <Button variant="outlined" startIcon={<Email />} onClick={() => navigate('/contact')}
+                    sx={{ borderColor: 'rgba(255,255,255,0.3)', color: '#fff', fontWeight: 700, px: 3, py: 1.5, borderRadius: '12px', '&:hover': { borderColor: '#fff' } }}>
+                    Gửi email
+                  </Button>
+                </Grid>
+              </Grid>
+            </CardContent>
+          </Card>
+        </Container>
+      </Box>
+    </Box>
+  );
+}
