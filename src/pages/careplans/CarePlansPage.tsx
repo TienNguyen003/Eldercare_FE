@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Box, IconButton, Tooltip, Typography, Grid, TextField, MenuItem, Chip } from '@mui/material';
+import { Box, IconButton, Tooltip, Typography, Grid, TextField, MenuItem } from '@mui/material';
 import { Edit, Delete, Assignment } from '@mui/icons-material';
 import { useForm, Controller } from 'react-hook-form';
 import { format } from 'date-fns';
@@ -53,7 +53,7 @@ export default function CarePlansPage() {
         return (
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
             <Box sx={{ width: 32, height: 32, borderRadius: '8px', bgcolor: '#EFF6FF', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-              <Assignment sx={{ fontSize: 16, color: '#2563EB' }} />
+              <Assignment sx={{ fontSize: 16, color: '#0D9488' }} />
             </Box>
             <Typography fontWeight={600} fontSize={13.5}>{row.title}</Typography>
           </Box>

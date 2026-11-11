@@ -1,10 +1,9 @@
 import { useState } from 'react';
 import {
   Card, Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
-  IconButton, CircularProgress, Dialog, DialogTitle, DialogContent, DialogActions,
-  Button, TextField, MenuItem, Grid, Tooltip, Box
+  IconButton, CircularProgress, TextField, MenuItem, Grid, Tooltip
 } from '@mui/material';
-import { Add } from '@mui/icons-material';
+import { Delete } from '@mui/icons-material';
 import { useForm, Controller } from 'react-hook-form';
 import { format } from 'date-fns';
 import {
@@ -13,6 +12,9 @@ import {
 } from '../../store/api/apiSlice';
 import PageHeader from '../../components/common/PageHeader';
 import StatusChip from '../../components/common/StatusChip';
+import FormDialog from '../../components/common/FormDialog';
+import ConfirmDialog from '../../components/common/ConfirmDialog';
+import EmptyHint from '../../components/common/EmptyHint';
 
 export default function ElderlyDiseasesPage() {
   const [selectedElderly, setSelectedElderly] = useState<number>(0);
@@ -37,18 +39,18 @@ export default function ElderlyDiseasesPage() {
   };
 
   return (
-    <PageHeader title="Bệnh án người già" action={{ label: 'Thêm bệnh', onClick: () => setDialogOpen(true) }}>
-      <Card sx={{ borderRadius: 2, boxShadow: '0 2px 10px rgba(0,0,0,0.08)', mb: 2, p: 2 }}>
-        <TextField select label="Chọn người già" value={selectedElderly} onChange={(e) => setSelectedElderly(Number(e.target.value))} size="small" sx={{ minWidth: 250 }}>
-          <MenuItem value={0}>-- Chọn người già --</MenuItem>
+    <PageHeader title="Bệnh án người cao tuổi" action={{ label: 'Thêm bệnh', onClick: () => setDialogOpen(true) }}>
+      <Card sx={{ mb: 2.5, p: 2, borderRadius: '20px', bgcolor: '#FBFDFE', borderLeft: '4px solid #0D9488' }}>
+        <TextField select label="Chọn người cao tuổi" value={selectedElderly} onChange={(e) => setSelectedElderly(Number(e.target.value))} size="small" sx={{ minWidth: 250 }}>
+          <MenuItem value={0}>— Chọn người cao tuổi —</MenuItem>
           {elderlies.map((e) => <MenuItem key={e.id} value={e.id}>{e.fullName}</MenuItem>)}
         </TextField>
       </Card>
 
-      <Card sx={{ borderRadius: 2, boxShadow: '0 2px 10px rgba(0,0,0,0.08)' }}>
+      <Card sx={{ borderRadius: '20px', border: '1px solid #E2E8F0', boxShadow: '0 2px 4px rgba(15,23,42,0.04), 0 12px 28px rgba(15,23,42,0.06)', overflow: 'hidden' }}>
         <TableContainer>
           <Table>
-            <TableHead sx={{ bgcolor: '#f5f5f5' }}>
+            <TableHead>
               <TableRow>
                 <TableCell>Bệnh</TableCell>
                 <TableCell>Ngày chẩn đoán</TableCell>
@@ -59,17 +61,17 @@ export default function ElderlyDiseasesPage() {
             </TableHead>
             <TableBody>
               {!selectedElderly ? (
-                <TableRow><TableCell colSpan={5} align="center">Chọn người già để xem</TableCell></TableRow>
+                <EmptyHint colSpan={5} title="Chưa chọn người cao tuổi" description="Chọn người cao tuổi ở bộ lọc phía trên để xem bệnh án" />
               ) : isLoading ? (
-                <TableRow><TableCell colSpan={5} align="center"><CircularProgress /></TableCell></TableRow>
+                <TableRow><TableCell colSpan={5} align="center" sx={{ py: 7 }}><CircularProgress size={30} sx={{ color: '#0D9488' }} /></TableCell></TableRow>
               ) : elderlyDiseases.map((d) => (
-                <TableRow key={d.id} hover>
+                <TableRow key={d.id} sx={{ '& td': { borderBottom: '1px solid #EDF1F5', py: 1.7, fontSize: 13.5 }, '&:hover td': { bgcolor: 'rgba(13,148,136,0.045)' } }}>
                   <TableCell sx={{ fontWeight: 500 }}>{d.diseaseName || `#${d.diseaseId}`}</TableCell>
                   <TableCell>{d.diagnosedDate ? format(new Date(d.diagnosedDate), 'dd/MM/yyyy') : '-'}</TableCell>
                   <TableCell><StatusChip status={d.status ?? 'ACTIVE'} /></TableCell>
                   <TableCell>{d.notes || '-'}</TableCell>
                   <TableCell align="center">
-                    <Tooltip title="Xóa"><IconButton size="small" color="error" onClick={() => setDeleteId(d.id)}><span>✕</span></IconButton></Tooltip>
+                    <Tooltip title="Xóa"><IconButton size="small" sx={{ bgcolor: 'rgba(239,68,68,0.12)', color: '#DC2626', '&:hover': { bgcolor: 'rgba(239,68,68,0.22)' } }} onClick={() => setDeleteId(d.id)}><Delete fontSize="small" /></IconButton></Tooltip>
                   </TableCell>
                 </TableRow>
               ))}
@@ -78,11 +80,10 @@ export default function ElderlyDiseasesPage() {
         </TableContainer>
       </Card>
 
-      <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} maxWidth="sm" fullWidth>
-        <DialogTitle>Thêm bệnh cho người già</DialogTitle>
-        <DialogContent>
-          <form id="disease-form" onSubmit={handleSubmit(onSubmit)}>
-            <Grid container spacing={2} sx={{ mt: 0.5 }}>
+      <FormDialog open={dialogOpen} onClose={() => setDialogOpen(false)}
+        title="Thêm bệnh cho người cao tuổi" formId="disease-form" submitLabel="Thêm">
+        <form id="disease-form" onSubmit={handleSubmit(onSubmit)}>
+            <Grid container spacing={2}>
               <Grid item xs={12}>
                 <Controller name="diseaseId" control={control} render={({ field }) => (
                   <TextField select fullWidth label="Chọn bệnh *" {...field}>
@@ -102,21 +103,11 @@ export default function ElderlyDiseasesPage() {
               <Grid item xs={12}><TextField fullWidth label="Ghi chú" multiline rows={2} {...register('notes')} /></Grid>
             </Grid>
           </form>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setDialogOpen(false)}>Hủy</Button>
-          <Button variant="contained" type="submit" form="disease-form">Thêm</Button>
-        </DialogActions>
-      </Dialog>
+      </FormDialog>
 
-      <Dialog open={!!deleteId} onClose={() => setDeleteId(null)}>
-        <DialogTitle>Xác nhận xóa</DialogTitle>
-        <DialogContent>Xóa bệnh án này?</DialogContent>
-        <DialogActions>
-          <Button onClick={() => setDeleteId(null)}>Hủy</Button>
-          <Button variant="contained" color="error" onClick={async () => { await remove(deleteId!); setDeleteId(null); }}>Xóa</Button>
-        </DialogActions>
-      </Dialog>
+      <ConfirmDialog open={!!deleteId} onClose={() => setDeleteId(null)}
+        onConfirm={async () => { await remove(deleteId!); setDeleteId(null); }}
+        message="Xóa bệnh án này? Hành động này không thể hoàn tác." />
     </PageHeader>
   );
 }

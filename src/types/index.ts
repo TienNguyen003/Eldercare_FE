@@ -17,7 +17,9 @@ export interface User {
   username: string;
   email: string;
   phone?: string;
+  active?: boolean;
   roles?: Role[];
+  createdAt?: string;
 }
 
 export interface Role {
@@ -33,6 +35,22 @@ export interface AuthState {
   isAuthenticated: boolean;
 }
 
+export interface ChangePasswordRequest {
+  oldPassword: string;
+  newPassword: string;
+}
+
+export interface DashboardStats {
+  totalElderly: number;
+  totalCaregivers: number;
+  totalCarePlans: number;
+  activeCarePlans: number;
+  todaySchedules: number;
+  pendingTasks: number;
+  unreadNotifications: number;
+  monthlyRevenue: number;
+}
+
 export interface Elderly {
   id: number;
   code: string;
@@ -42,6 +60,8 @@ export interface Elderly {
   phone?: string;
   address?: string;
   status?: string;
+  familyUserId?: number;
+  familyUserName?: string;
   createdAt?: string;
 }
 
@@ -87,8 +107,42 @@ export interface Document {
   elderlyId: number;
   type: string;
   title: string;
+  fileName?: string;
   fileUrl?: string;
+  uploadedBy?: number;
+  fileSize?: number;
+  mimeType?: string;
+  description?: string;
   uploadedAt?: string;
+}
+
+export interface LabelValueDTO {
+  label: string;
+  value: number;
+}
+
+export interface MonthRevenueDTO {
+  month: string;
+  total: number;
+}
+
+export interface ReportOverview {
+  elderlyByStatus: LabelValueDTO[];
+  planByStatus: LabelValueDTO[];
+  taskByStatus: LabelValueDTO[];
+  incidentBySeverity: LabelValueDTO[];
+  medicationScheduleByStatus: LabelValueDTO[];
+  revenueByMonth: MonthRevenueDTO[];
+  caregiverLoad: LabelValueDTO[];
+}
+
+export interface HealthAlert {
+  elderlyId: number;
+  elderlyName: string;
+  type: string;
+  message: string;
+  severity: string;
+  recordedAt: string;
 }
 
 export interface EmergencyContact {
@@ -150,15 +204,26 @@ export interface CareSchedule {
   type: string;
   status: string;
   notes?: string;
+  checkInTime?: string;
+  checkOutTime?: string;
 }
 
 export interface CareTask {
   id: number;
   scheduleId: number;
-  title: string;
+  taskType: string;
+  title?: string;
   description?: string;
   status: string;
   priority?: string;
+  createdAt?: string;
+  completedAt?: string;
+}
+
+export interface UserRole {
+  id: number;
+  userId: number;
+  roleId: number;
 }
 
 export interface Medication {
@@ -181,6 +246,9 @@ export interface MedicationSchedule {
   startDate: string;
   endDate?: string;
   timeOfDay?: string;
+  timeToTake?: string;
+  date?: string;
+  takenAt?: string;
   status: string;
 }
 
@@ -272,4 +340,40 @@ export interface AuditLog {
   entityId: string;
   details?: string;
   createdAt: string;
+}
+
+export interface ContactMessage {
+  id: number;
+  name: string;
+  email: string;
+  phone?: string;
+  message: string;
+  status: string;
+  createdAt: string;
+}
+
+export interface ServiceBooking {
+  id: number;
+  fullName: string;
+  phone: string;
+  email?: string;
+  address?: string;
+  servicePackageId?: number;
+  servicePackageName?: string;
+  preferredDate?: string;
+  notes?: string;
+  status: string;
+  createdAt?: string;
+}
+
+export interface Feedback {
+  id: number;
+  caregiverId: number;
+  caregiverName?: string;
+  elderlyId?: number;
+  elderlyName?: string;
+  rating: number;
+  comment?: string;
+  authorName: string;
+  createdAt?: string;
 }

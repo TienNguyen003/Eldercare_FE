@@ -1,13 +1,16 @@
 import { lazy, Suspense } from 'react';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 import { CircularProgress, Box } from '@mui/material';
+import { Favorite } from '@mui/icons-material';
 import MainLayout from '../components/layout/MainLayout';
 import PublicLayout from '../components/layout/PublicLayout';
 import ProtectedRoute from '../components/layout/ProtectedRoute';
-
 const Loading = () => (
-  <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh' }}>
-    <CircularProgress />
+  <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh', flexDirection: 'column', gap: 2 }}>
+    <Box sx={{ width: 44, height: 44, borderRadius: '14px', background: 'linear-gradient(135deg,#0D9488,#10B981)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 10px 30px rgba(13,148,136,0.4)', mb: 1 }}>
+      <Favorite sx={{ color: '#fff', fontSize: 20 }} />
+    </Box>
+    <CircularProgress size={26} sx={{ color: '#0D9488' }} />
   </Box>
 );
 
@@ -53,6 +56,14 @@ const NotificationsPage       = () => wrap(() => import('../pages/notifications/
 const UsersPage               = () => wrap(() => import('../pages/settings/UsersPage'));
 const RolesPage               = () => wrap(() => import('../pages/settings/RolesPage'));
 const AuditLogsPage           = () => wrap(() => import('../pages/settings/AuditLogsPage'));
+const CareTasksPage           = () => wrap(() => import('../pages/caretasks/CareTasksPage'));
+const ProfilePage             = () => wrap(() => import('../pages/profile/ProfilePage'));
+const DocumentsPage           = () => wrap(() => import('../pages/documents/DocumentsPage'));
+const ReportsPage             = () => wrap(() => import('../pages/reports/ReportsPage'));
+const MyDayPage               = () => wrap(() => import('../pages/myday/MyDayPage'));
+const ServiceBookingsPage     = () => wrap(() => import('../pages/bookings/ServiceBookingsPage'));
+const FamilyPortalPage        = () => wrap(() => import('../pages/family/FamilyPortalPage'));
+const FeedbacksPage           = () => wrap(() => import('../pages/feedbacks/FeedbacksPage'));
 
 const router = createBrowserRouter([
   // Public
@@ -86,7 +97,8 @@ const router = createBrowserRouter([
           { path: '/elderly/diseases',          element: <ElderlyDiseasesPage /> },
           { path: '/caregivers',                element: <CaregiversPage /> },
           { path: '/care-plans',                element: <CarePlansPage /> },
-          { path: '/care-schedules',            element: <CareSchedulesPage /> },
+                               { path: '/care-schedules',            element: <CareSchedulesPage /> },
+           { path: '/care-tasks',                element: <CareTasksPage /> },
           { path: '/vital-signs',               element: <VitalSignsPage /> },
           { path: '/medications',               element: <MedicationsPage /> },
           { path: '/medication-schedules',      element: <MedicationSchedulesPage /> },
@@ -95,11 +107,18 @@ const router = createBrowserRouter([
           { path: '/mental-health-assessments', element: <AssessmentsPage /> },
           { path: '/incidents',                 element: <IncidentReportsPage /> },
           { path: '/service-packages',          element: <ServicePackagesPage /> },
+          { path: '/service-bookings',          element: <ServiceBookingsPage /> },
           { path: '/payments',                  element: <PaymentsPage /> },
           { path: '/notifications',             element: <NotificationsPage /> },
           { path: '/users',                     element: <UsersPage /> },
           { path: '/roles',                     element: <RolesPage /> },
           { path: '/audit-logs',                element: <AuditLogsPage /> },
+          { path: '/documents',                 element: <DocumentsPage /> },
+          { path: '/reports',                   element: <ReportsPage /> },
+          { path: '/my-day',                    element: <MyDayPage /> },
+          { path: '/my-family',                 element: <FamilyPortalPage /> },
+          { path: '/feedbacks',                 element: <FeedbacksPage /> },
+          { path: '/profile',                   element: <ProfilePage /> },
           { path: '*',                          element: <Navigate to="/" replace /> },
         ],
       },

@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { Box, Container, Typography, Chip, Accordion, AccordionSummary, AccordionDetails, Grid, Card, CardContent, Avatar, Button } from '@mui/material';
+import { Box, Container, Typography, Accordion, AccordionSummary, AccordionDetails, Grid, Card, CardContent, Avatar, Button } from '@mui/material';
 import { ExpandMore, HelpOutline, Phone, Email } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
+import PageHero from '../../components/public/PageHero';
 
 const faqs = [
   {
@@ -43,29 +44,28 @@ export default function FAQPage() {
 
   return (
     <Box>
-      <Box sx={{ background: 'linear-gradient(135deg, #0F172A, #1E3A5F)', py: 10, textAlign: 'center' }}>
-        <Container maxWidth="md">
-          <Chip label="FAQ" sx={{ bgcolor: 'rgba(37,99,235,0.2)', color: '#93C5FD', fontWeight: 600, mb: 3 }} />
-          <Typography variant="h2" fontWeight={800} color="#fff" mb={2}>Câu hỏi thường gặp</Typography>
-          <Typography color="#94A3B8" fontSize={17}>Tìm câu trả lời cho những thắc mắc phổ biến nhất</Typography>
-        </Container>
-      </Box>
+      <PageHero
+        chip="FAQ"
+        title="Câu hỏi thường gặp"
+        subtitle="Tìm câu trả lời cho những thắc mắc phổ biến nhất về dịch vụ, thanh toán và hỗ trợ kỹ thuật"
+        image="https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&w=1600&q=75"
+      />
 
       <Box sx={{ py: 8, bgcolor: '#F8FAFC' }}>
         <Container maxWidth="md">
           {faqs.map((section) => (
             <Box key={section.category} mb={4}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 2.5 }}>
-                <Box sx={{ width: 4, height: 24, borderRadius: '2px', background: 'linear-gradient(135deg,#2563EB,#7C3AED)' }} />
+                <Box sx={{ width: 4, height: 24, borderRadius: '2px', background: 'linear-gradient(135deg,#0D9488,#10B981)' }} />
                 <Typography fontWeight={800} fontSize={18} color="#0F172A">{section.category}</Typography>
               </Box>
               {section.questions.map((item, i) => (
                 <Accordion key={i} expanded={expanded === `${section.category}-${i}`}
                   onChange={(_, v) => setExpanded(v ? `${section.category}-${i}` : false)}
-                  sx={{ mb: 1.5, borderRadius: '14px !important', border: '1px solid #E2E8F0', boxShadow: 'none', '&:before': { display: 'none' }, '&.Mui-expanded': { boxShadow: '0 4px 20px rgba(37,99,235,0.1)', borderColor: '#BFDBFE' } }}>
+                  sx={{ mb: 1.5, border: '1px solid #E2E8F0', boxShadow: '0 1px 2px rgba(15,23,42,0.04)', '&.Mui-expanded': { boxShadow: '0 6px 24px rgba(13,148,136,0.12)', borderColor: '#99F6E4' } }}>
                   <AccordionSummary expandIcon={<ExpandMore sx={{ color: '#64748B' }} />} sx={{ px: 3, py: 0.5, '& .MuiAccordionSummary-content': { my: 1.5 } }}>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                      <HelpOutline sx={{ fontSize: 18, color: '#2563EB', flexShrink: 0 }} />
+                      <HelpOutline sx={{ fontSize: 18, color: '#0D9488', flexShrink: 0 }} />
                       <Typography fontWeight={600} fontSize={14.5} color="#0F172A">{item.q}</Typography>
                     </Box>
                   </AccordionSummary>
@@ -80,14 +80,14 @@ export default function FAQPage() {
           ))}
 
           {/* Still have questions */}
-          <Card sx={{ borderRadius: '20px', background: 'linear-gradient(135deg, #0F172A, #1E3A5F)', mt: 4, border: 'none', boxShadow: 'none' }}>
+          <Card sx={{ borderRadius: '20px', background: 'linear-gradient(135deg, #0F172A, #123E3C)', mt: 4, border: 'none', boxShadow: '0 20px 45px rgba(15,23,42,0.25)' }}>
             <CardContent sx={{ p: 4, textAlign: 'center' }}>
               <Typography variant="h5" fontWeight={800} color="#fff" mb={1}>Vẫn còn thắc mắc?</Typography>
               <Typography color="#94A3B8" fontSize={15} mb={3}>Đội ngũ hỗ trợ của chúng tôi luôn sẵn sàng giải đáp</Typography>
               <Grid container spacing={2} justifyContent="center">
                 <Grid item xs={12} sm="auto">
                   <Button variant="contained" startIcon={<Phone />} onClick={() => navigate('/contact')}
-                    sx={{ background: 'linear-gradient(135deg,#2563EB,#7C3AED)', fontWeight: 700, px: 3, py: 1.5, borderRadius: '12px' }}>
+                    sx={{ background: 'linear-gradient(135deg,#0D9488,#10B981)', fontWeight: 700, px: 3, py: 1.5, borderRadius: '12px' }}>
                     Gọi 1800 1234
                   </Button>
                 </Grid>

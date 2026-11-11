@@ -1,17 +1,17 @@
 import { useState } from 'react';
 import {
   Card, Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
-  IconButton, CircularProgress, Dialog, DialogTitle, DialogContent, DialogActions,
-  Button, TextField, MenuItem, Grid, Tooltip, LinearProgress, Box, Typography
+  CircularProgress, TextField, MenuItem, Grid, LinearProgress, Box, Typography
 } from '@mui/material';
-import { Add } from '@mui/icons-material';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { format } from 'date-fns';
 import {
   useGetElderliesQuery, useGetFunctionalAssessmentsQuery, useCreateFunctionalAssessmentMutation,
   useGetMentalHealthAssessmentsQuery, useCreateMentalHealthAssessmentMutation
 } from '../../store/api/apiSlice';
 import PageHeader from '../../components/common/PageHeader';
+import FormDialog from '../../components/common/FormDialog';
+import EmptyHint from '../../components/common/EmptyHint';
 
 const ScoreBar = ({ score, max = 100 }: { score?: number; max?: number }) => (
   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -46,10 +46,10 @@ export default function AssessmentsPage() {
 
   return (
     <PageHeader title="Đánh giá sức khỏe" action={{ label: 'Tạo đánh giá', onClick: () => setDialogOpen(true) }}>
-      <Card sx={{ borderRadius: 2, boxShadow: '0 2px 10px rgba(0,0,0,0.08)', mb: 2, p: 2 }}>
+      <Card sx={{ mb: 2.5, p: 2, borderRadius: '20px', bgcolor: '#FBFDFE', borderLeft: '4px solid #0D9488' }}>
         <Box sx={{ display: 'flex', gap: 2 }}>
-          <TextField select label="Chọn người già" value={selectedElderly} onChange={(e) => setSelectedElderly(Number(e.target.value))} size="small" sx={{ minWidth: 250 }}>
-            <MenuItem value={0}>-- Chọn người già --</MenuItem>
+          <TextField select label="Chọn người cao tuổi" value={selectedElderly} onChange={(e) => setSelectedElderly(Number(e.target.value))} size="small" sx={{ minWidth: 250 }}>
+            <MenuItem value={0}>— Chọn người cao tuổi —</MenuItem>
             {elderlies.map((e) => <MenuItem key={e.id} value={e.id}>{e.fullName}</MenuItem>)}
           </TextField>
           <TextField select label="Loại đánh giá" value={tab} onChange={(e) => setTab(e.target.value as any)} size="small">
@@ -60,10 +60,10 @@ export default function AssessmentsPage() {
       </Card>
 
       {tab === 'functional' && (
-        <Card sx={{ borderRadius: 2, boxShadow: '0 2px 10px rgba(0,0,0,0.08)' }}>
+        <Card sx={{ borderRadius: '20px', border: '1px solid #E2E8F0', boxShadow: '0 2px 4px rgba(15,23,42,0.04), 0 12px 28px rgba(15,23,42,0.06)', overflow: 'hidden' }}>
           <TableContainer>
             <Table>
-              <TableHead sx={{ bgcolor: '#f5f5f5' }}>
+              <TableHead>
                 <TableRow>
                   <TableCell>Ngày đánh giá</TableCell>
                   <TableCell>Vận động</TableCell>
@@ -74,10 +74,10 @@ export default function AssessmentsPage() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {!selectedElderly ? <TableRow><TableCell colSpan={6} align="center">Chọn người già</TableCell></TableRow>
-                  : fl ? <TableRow><TableCell colSpan={6} align="center"><CircularProgress /></TableCell></TableRow>
+                {!selectedElderly ? <EmptyHint colSpan={6} title="Chưa chọn người cao tuổi" description="Chọn người cao tuổi ở bộ lọc phía trên để xem đánh giá chức năng" />
+                  : fl ? <TableRow><TableCell colSpan={6} align="center" sx={{ py: 7 }}><CircularProgress size={30} sx={{ color: '#0D9488' }} /></TableCell></TableRow>
                     : functionals.map((f) => (
-                      <TableRow key={f.id} hover>
+                      <TableRow key={f.id} sx={{ '& td': { borderBottom: '1px solid #EDF1F5', py: 1.7, fontSize: 13.5 }, '&:hover td': { bgcolor: 'rgba(13,148,136,0.045)' } }}>
                         <TableCell>{f.assessmentDate ? format(new Date(f.assessmentDate), 'dd/MM/yyyy') : '-'}</TableCell>
                         <TableCell><ScoreBar score={f.mobilityScore} /></TableCell>
                         <TableCell><ScoreBar score={f.adlScore} /></TableCell>
@@ -93,10 +93,10 @@ export default function AssessmentsPage() {
       )}
 
       {tab === 'mental' && (
-        <Card sx={{ borderRadius: 2, boxShadow: '0 2px 10px rgba(0,0,0,0.08)' }}>
+        <Card sx={{ borderRadius: '20px', border: '1px solid #E2E8F0', boxShadow: '0 2px 4px rgba(15,23,42,0.04), 0 12px 28px rgba(15,23,42,0.06)', overflow: 'hidden' }}>
           <TableContainer>
             <Table>
-              <TableHead sx={{ bgcolor: '#f5f5f5' }}>
+              <TableHead>
                 <TableRow>
                   <TableCell>Ngày đánh giá</TableCell>
                   <TableCell>Trầm cảm</TableCell>
@@ -107,10 +107,10 @@ export default function AssessmentsPage() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {!selectedElderly ? <TableRow><TableCell colSpan={6} align="center">Chọn người già</TableCell></TableRow>
-                  : ml ? <TableRow><TableCell colSpan={6} align="center"><CircularProgress /></TableCell></TableRow>
+                {!selectedElderly ? <EmptyHint colSpan={6} title="Chưa chọn người cao tuổi" description="Chọn người cao tuổi ở bộ lọc phía trên để xem đánh giá sức khỏe tâm thần" />
+                  : ml ? <TableRow><TableCell colSpan={6} align="center" sx={{ py: 7 }}><CircularProgress size={30} sx={{ color: '#0D9488' }} /></TableCell></TableRow>
                     : mentals.map((m) => (
-                      <TableRow key={m.id} hover>
+                      <TableRow key={m.id} sx={{ '& td': { borderBottom: '1px solid #EDF1F5', py: 1.7, fontSize: 13.5 }, '&:hover td': { bgcolor: 'rgba(13,148,136,0.045)' } }}>
                         <TableCell>{m.assessmentDate ? format(new Date(m.assessmentDate), 'dd/MM/yyyy') : '-'}</TableCell>
                         <TableCell><ScoreBar score={m.depressionScore} /></TableCell>
                         <TableCell><ScoreBar score={m.anxietyScore} /></TableCell>
@@ -125,11 +125,11 @@ export default function AssessmentsPage() {
         </Card>
       )}
 
-      <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} maxWidth="sm" fullWidth>
-        <DialogTitle>Tạo đánh giá {tab === 'functional' ? 'chức năng' : 'tâm thần'}</DialogTitle>
-        <DialogContent>
-          <form id="assessment-form" onSubmit={handleSubmit(onSubmit)}>
-            <Grid container spacing={2} sx={{ mt: 0.5 }}>
+      <FormDialog open={dialogOpen} onClose={() => setDialogOpen(false)}
+        title={`Tạo đánh giá ${tab === 'functional' ? 'chức năng' : 'tâm thần'}`}
+        formId="assessment-form" submitLabel="Tạo">
+        <form id="assessment-form" onSubmit={handleSubmit(onSubmit)}>
+            <Grid container spacing={2}>
               <Grid item xs={12}><TextField fullWidth label="Ngày đánh giá" type="date" InputLabelProps={{ shrink: true }} {...register('assessmentDate')} /></Grid>
               {tab === 'functional' ? (
                 <>
@@ -150,12 +150,7 @@ export default function AssessmentsPage() {
               <Grid item xs={12}><TextField fullWidth label="Ghi chú" multiline rows={2} {...register('notes')} /></Grid>
             </Grid>
           </form>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setDialogOpen(false)}>Hủy</Button>
-          <Button variant="contained" type="submit" form="assessment-form">Tạo</Button>
-        </DialogActions>
-      </Dialog>
+      </FormDialog>
     </PageHeader>
   );
 }

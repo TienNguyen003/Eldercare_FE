@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Box, IconButton, Tooltip, Avatar, Typography, Grid, TextField, MenuItem, Button } from '@mui/material';
+import { Box, IconButton, Tooltip, Avatar, Typography, Grid, TextField, MenuItem } from '@mui/material';
 import { Edit, Delete, Visibility } from '@mui/icons-material';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -66,7 +66,7 @@ export default function ElderlyListPage() {
       case 'fullName':
         return (
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-            <Avatar sx={{ width: 34, height: 34, background: 'linear-gradient(135deg, #2563EB, #7C3AED)', fontSize: 13, fontWeight: 700 }}>
+            <Avatar sx={{ width: 34, height: 34, background: 'linear-gradient(135deg, #0D9488, #10B981)', fontSize: 13, fontWeight: 700 }}>
               {row.fullName?.[0]}
             </Avatar>
             <Typography fontWeight={600} fontSize={13.5}>{row.fullName}</Typography>
@@ -85,7 +85,7 @@ export default function ElderlyListPage() {
           <Box sx={{ display: 'flex', justifyContent: 'center', gap: 0.5 }}>
             <Tooltip title="Chi tiết">
               <IconButton size="small" onClick={() => navigate(`/elderly/${row.id}`)}
-                sx={{ bgcolor: '#EFF6FF', color: '#2563EB', '&:hover': { bgcolor: '#DBEAFE' } }}>
+                sx={{ bgcolor: '#EFF6FF', color: '#0D9488', '&:hover': { bgcolor: '#DBEAFE' } }}>
                 <Visibility fontSize="small" />
               </IconButton>
             </Tooltip>

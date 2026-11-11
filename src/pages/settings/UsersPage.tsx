@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { Box, IconButton, Tooltip, Typography, Grid, TextField, Avatar, Chip } from '@mui/material';
+import { Box, IconButton, Tooltip, Typography, Grid, TextField, Avatar, Chip, Autocomplete } from '@mui/material';
 import { Edit, Delete, AdminPanelSettings } from '@mui/icons-material';
-import { useForm } from 'react-hook-form';
-import { useGetUsersQuery, useCreateUserMutation, useUpdateUserMutation, useDeleteUserMutation } from '../../store/api/apiSlice';
-import type { User } from '../../types';
+import { useForm, Controller } from 'react-hook-form';
+import { useGetUsersQuery, useGetRolesQuery, useCreateUserMutation, useUpdateUserMutation, useDeleteUserMutation } from '../../store/api/apiSlice';
+import type { User, Role } from '../../types';
 import PageHeader from '../../components/common/PageHeader';
 import DataTable from '../../components/common/DataTable';
 import FormDialog from '../../components/common/FormDialog';
@@ -17,7 +17,7 @@ const COLUMNS = [
   { key: 'actions', label: 'Thao tác', align: 'center' as const, width: 100 },
 ];
 
-const COLORS = ['#2563EB', '#7C3AED', '#059669', '#DC2626', '#D97706'];
+const COLORS = ['#0D9488', '#10B981', '#059669', '#DC2626', '#D97706'];
 
 export default function UsersPage() {
   const [page, setPage] = useState(0);
@@ -27,10 +27,13 @@ export default function UsersPage() {
   const [deleteId, setDeleteId] = useState<number | null>(null);
 
   const { data, isLoading } = useGetUsersQuery({ page, size: 10 });
+  const { data: rolesData } = useGetRolesQuery();
+  const roles = rolesData?.data?.content ?? [];
+  const [selectedRoles, setSelectedRoles] = useState<Role[]>([]);
   const [create] = useCreateUserMutation();
   const [update] = useUpdateUserMutation();
   const [remove] = useDeleteUserMutation();
-  const { register, handleSubmit, reset, formState: { isSubmitting } } = useForm();
+  const { register, handleSubmit, control, reset, formState: { isSubmitting } } = useForm();
 
   const users = data?.data?.content ?? [];
   const total = data?.data?.totalElements ?? 0;
@@ -62,7 +65,7 @@ export default function UsersPage() {
           <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap' }}>
             {row.roles?.map((r) => (
               <Chip key={r.id} label={r.name} size="small" icon={<AdminPanelSettings sx={{ fontSize: '12px !important' }} />}
-                sx={{ bgcolor: '#F5F3FF', color: '#7C3AED', fontWeight: 600, fontSize: 11, borderRadius: '8px', height: 22 }} />
+                sx={{ bgcolor: '#F5F3FF', color: '#10B981', fontWeight: 600, fontSize: 11, borderRadius: '8px', height: 22 }} />
             )) ?? '—'}
           </Box>
         );
@@ -99,6 +102,18 @@ export default function UsersPage() {
             <Grid item xs={6}><TextField fullWidth label="Email" {...register('email')} /></Grid>
             <Grid item xs={6}><TextField fullWidth label="Điện thoại" {...register('phone')} /></Grid>
             {!editing && <Grid item xs={12}><TextField fullWidth label="Mật khẩu" type="password" {...register('password')} /></Grid>}
+            <Grid item xs={12}>
+              <Controller name="roles" control={control} render={() => (
+                <Autocomplete
+                  multiple
+                  options={roles}
+                  getOptionLabel={(o) => o.name}
+                  value={selectedRoles}
+                  onChange={(_, v) => setSelectedRoles(v)}
+                  renderInput={(params) => <TextField {...params} label="Vai trò" size="small" />}
+                />
+              )} />
+            </Grid>
           </Grid>
         </form>
       </FormDialog>

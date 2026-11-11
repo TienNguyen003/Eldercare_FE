@@ -1,21 +1,22 @@
 import { useState } from 'react';
 import {
   Box, Container, Typography, Chip, Card, CardContent, Avatar,
-  Grid, IconButton, Button, Tooltip, CircularProgress,
+  Grid, IconButton, Button, CircularProgress,
 } from '@mui/material';
 import {
-  ChevronLeft, ChevronRight, Today, People, CalendarMonth,
+  ChevronLeft, ChevronRight, Today, CalendarMonth,
   AccessTime, FiberManualRecord,
 } from '@mui/icons-material';
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, getDay, isSameDay, isToday, addMonths, subMonths, isSameMonth } from 'date-fns';
 import { vi } from 'date-fns/locale';
 import { useGetCareSchedulesQuery, useGetCaregiversQuery } from '../../store/api/apiSlice';
+import EmptyState from '../../components/common/EmptyState';
 
 const DAY_LABELS = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
 
 const CAREGIVER_COLORS = [
-  { bg: '#EFF6FF', border: '#BFDBFE', text: '#1D4ED8', dot: '#2563EB' },
-  { bg: '#F5F3FF', border: '#DDD6FE', text: '#6D28D9', dot: '#7C3AED' },
+  { bg: '#EFF6FF', border: '#BFDBFE', text: '#0B7A70', dot: '#0D9488' },
+  { bg: '#F5F3FF', border: '#DDD6FE', text: '#059669', dot: '#10B981' },
   { bg: '#ECFDF5', border: '#A7F3D0', text: '#065F46', dot: '#059669' },
   { bg: '#FFFBEB', border: '#FDE68A', text: '#92400E', dot: '#D97706' },
   { bg: '#FEF2F2', border: '#FECACA', text: '#991B1B', dot: '#DC2626' },
@@ -55,9 +56,9 @@ export default function CaregiverSchedulePage() {
   return (
     <Box>
       {/* Hero */}
-      <Box sx={{ background: 'linear-gradient(135deg, #0F172A, #1E3A5F)', py: 8, textAlign: 'center' }}>
+      <Box sx={{ background: 'linear-gradient(135deg, #0F172A, #123E3C)', py: 8, textAlign: 'center' }}>
         <Container maxWidth="md">
-          <Chip label="Lịch chăm sóc" sx={{ bgcolor: 'rgba(37,99,235,0.2)', color: '#93C5FD', fontWeight: 600, mb: 2 }} />
+          <Chip label="Lịch chăm sóc" sx={{ bgcolor: 'rgba(13,148,136,0.2)', color: '#99F6E4', fontWeight: 600, mb: 2 }} />
           <Typography variant="h3" fontWeight={800} color="#fff" mb={1.5}>Lịch nhân viên chăm sóc</Typography>
           <Typography color="#94A3B8" fontSize={16}>Xem lịch phân công chăm sóc — ai đang chăm sóc ai, ca nào còn trống</Typography>
         </Container>
@@ -68,7 +69,7 @@ export default function CaregiverSchedulePage() {
           <Grid container spacing={3}>
             {/* Calendar */}
             <Grid item xs={12} md={8}>
-              <Card sx={{ borderRadius: '20px', border: '1px solid #E2E8F0', boxShadow: 'none' }}>
+              <Card sx={{ borderRadius: '20px', border: '1px solid #E2E8F0', boxShadow: '0 2px 4px rgba(15,23,42,0.04), 0 12px 28px rgba(15,23,42,0.06)' }}>
                 <CardContent sx={{ p: 3 }}>
                   {/* Month nav */}
                   <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
@@ -130,14 +131,14 @@ export default function CaregiverSchedulePage() {
                               aspectRatio: '1', p: 0.5, cursor: 'pointer',
                               display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
                               borderRadius: '12px', position: 'relative',
-                              bgcolor: isSelected ? '#2563EB' : isCurrentDay ? '#EFF6FF' : 'transparent',
-                              border: isCurrentDay && !isSelected ? '2px solid #2563EB' : '2px solid transparent',
-                              '&:hover': { bgcolor: isSelected ? '#2563EB' : '#F1F5F9' },
+                              bgcolor: isSelected ? '#0D9488' : isCurrentDay ? '#EFF6FF' : 'transparent',
+                              border: isCurrentDay && !isSelected ? '2px solid #0D9488' : '2px solid transparent',
+                              '&:hover': { bgcolor: isSelected ? '#0D9488' : '#F1F5F9' },
                               transition: 'all 0.15s',
                               opacity: isCurrentMonth ? 1 : 0.3,
                             }}>
                               <Typography fontSize={13} fontWeight={isCurrentDay || isSelected ? 700 : 400}
-                                sx={{ color: isSelected ? '#fff' : isCurrentDay ? '#2563EB' : '#374151', lineHeight: 1 }}>
+                                sx={{ color: isSelected ? '#fff' : isCurrentDay ? '#0D9488' : '#374151', lineHeight: 1 }}>
                                 {format(day, 'd')}
                               </Typography>
                               {/* Dots */}
@@ -159,7 +160,7 @@ export default function CaregiverSchedulePage() {
 
               {/* Legend */}
               {caregivers.length > 0 && (
-                <Card sx={{ borderRadius: '16px', border: '1px solid #E2E8F0', boxShadow: 'none', mt: 2 }}>
+                <Card sx={{ borderRadius: '20px', border: '1px solid #E2E8F0', boxShadow: '0 2px 4px rgba(15,23,42,0.04), 0 12px 28px rgba(15,23,42,0.06)', mt: 2 }}>
                   <CardContent sx={{ p: 2.5 }}>
                     <Typography fontWeight={700} fontSize={13} color="#64748B" mb={1.5}
                       sx={{ textTransform: 'uppercase', letterSpacing: '0.05em', fontSize: 11 }}>
@@ -184,10 +185,10 @@ export default function CaregiverSchedulePage() {
 
             {/* Day detail panel */}
             <Grid item xs={12} md={4}>
-              <Card sx={{ borderRadius: '20px', border: '1px solid #E2E8F0', boxShadow: 'none', position: 'sticky', top: 20 }}>
+              <Card sx={{ borderRadius: '20px', border: '1px solid #E2E8F0', boxShadow: '0 2px 4px rgba(15,23,42,0.04), 0 12px 28px rgba(15,23,42,0.06)', position: 'sticky', top: 20 }}>
                 <CardContent sx={{ p: 3 }}>
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 3 }}>
-                    <Box sx={{ width: 40, height: 40, borderRadius: '12px', background: 'linear-gradient(135deg,#2563EB,#7C3AED)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <Box sx={{ width: 40, height: 40, borderRadius: '12px', background: 'linear-gradient(135deg,#0D9488,#10B981)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                       <CalendarMonth sx={{ color: '#fff', fontSize: 20 }} />
                     </Box>
                     <Box>
@@ -201,11 +202,12 @@ export default function CaregiverSchedulePage() {
                   </Box>
 
                   {selectedSchedules.length === 0 ? (
-                    <Box sx={{ textAlign: 'center', py: 5 }}>
-                      <CalendarMonth sx={{ fontSize: 44, color: '#CBD5E1', mb: 1.5 }} />
-                      <Typography fontWeight={600} color="text.secondary" fontSize={14}>Không có lịch chăm sóc</Typography>
-                      <Typography fontSize={12} color="text.disabled" mt={0.5}>Ngày này chưa có ca phân công</Typography>
-                    </Box>
+                    <EmptyState
+                      icon={<CalendarMonth />}
+                      title="Không có lịch chăm sóc"
+                      description="Ngày này chưa có ca phân công nào"
+                      minHeight={180}
+                    />
                   ) : (
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
                       <Typography fontSize={12} color="#64748B" fontWeight={600} sx={{ textTransform: 'uppercase', letterSpacing: '0.05em' }}>

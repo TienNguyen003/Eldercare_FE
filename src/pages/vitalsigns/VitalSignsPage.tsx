@@ -23,7 +23,7 @@ const COLUMNS = [
 ];
 
 const Metric = ({ icon, label, value, unit, color, bg }: any) => (
-  <Card sx={{ borderRadius: '16px', border: '1px solid #E2E8F0', boxShadow: 'none' }}>
+  <Card sx={{ borderRadius: '20px', border: '1px solid #E2E8F0', boxShadow: '0 2px 4px rgba(15,23,42,0.04), 0 12px 28px rgba(15,23,42,0.06)' }}>
     <CardContent sx={{ p: 2, '&:last-child': { pb: 2 } }}>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
         <Box sx={{ width: 32, height: 32, borderRadius: '8px', bgcolor: bg, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -92,9 +92,9 @@ export default function VitalSignsPage() {
   return (
     <PageHeader title="Chỉ số sức khỏe" subtitle="Theo dõi và ghi nhận chỉ số sinh tồn" action={{ label: 'Thêm chỉ số', onClick: openCreate }}>
       {/* Filter */}
-      <Card sx={{ borderRadius: '16px', border: '1px solid #E2E8F0', boxShadow: 'none', mb: 3 }}>
+      <Card sx={{ borderRadius: '20px', border: '1px solid #E2E8F0', boxShadow: '0 2px 4px rgba(15,23,42,0.04), 0 12px 28px rgba(15,23,42,0.06)', mb: 3 }}>
         <CardContent sx={{ p: 2.5, '&:last-child': { pb: 2.5 }, display: 'flex', alignItems: 'center', gap: 2 }}>
-          <MonitorHeart sx={{ color: '#2563EB', fontSize: 20 }} />
+          <MonitorHeart sx={{ color: '#0D9488', fontSize: 20 }} />
           <TextField select label="Chọn người cao tuổi" value={selectedElderly} onChange={(e) => setSelectedElderly(Number(e.target.value))} size="small" sx={{ minWidth: 260 }}>
             <MenuItem value={0}>— Chọn người cao tuổi —</MenuItem>
             {elderlies.map((e) => <MenuItem key={e.id} value={e.id}>{e.fullName}</MenuItem>)}
@@ -106,7 +106,7 @@ export default function VitalSignsPage() {
       {latest && (
         <Grid container spacing={2} mb={3}>
           <Grid item xs={6} sm={3}><Metric icon={<Favorite />} label="Huyết áp" value={`${latest.bloodPressureSystolic}/${latest.bloodPressureDiastolic}`} unit="mmHg" color="#DC2626" bg="#FEF2F2" /></Grid>
-          <Grid item xs={6} sm={3}><Metric icon={<MonitorHeart />} label="Nhịp tim" value={latest.heartRate} unit="bpm" color="#2563EB" bg="#EFF6FF" /></Grid>
+          <Grid item xs={6} sm={3}><Metric icon={<MonitorHeart />} label="Nhịp tim" value={latest.heartRate} unit="bpm" color="#0D9488" bg="#EFF6FF" /></Grid>
           <Grid item xs={6} sm={3}><Metric icon={<Air />} label="SpO2" value={latest.oxygenSaturation} unit="%" color="#059669" bg="#ECFDF5" /></Grid>
           <Grid item xs={6} sm={3}><Metric icon={<DeviceThermostat />} label="Nhiệt độ" value={latest.temperature} unit="°C" color="#D97706" bg="#FFFBEB" /></Grid>
         </Grid>
@@ -114,13 +114,13 @@ export default function VitalSignsPage() {
 
       {/* Chart */}
       {chartData.length > 0 && (
-        <Card sx={{ borderRadius: '16px', border: '1px solid #E2E8F0', boxShadow: 'none', mb: 3 }}>
+        <Card sx={{ borderRadius: '20px', border: '1px solid #E2E8F0', boxShadow: '0 2px 4px rgba(15,23,42,0.04), 0 12px 28px rgba(15,23,42,0.06)', mb: 3 }}>
           <CardContent sx={{ p: 3 }}>
             <Typography fontWeight={700} fontSize={15} mb={2}>Biểu đồ theo dõi</Typography>
             <ResponsiveContainer width="100%" height={220}>
               <AreaChart data={chartData}>
                 <defs>
-                  {[['bp','#DC2626'],['hr','#2563EB'],['spo2','#059669']].map(([k,c]) => (
+                  {[['bp','#DC2626'],['hr','#0D9488'],['spo2','#059669']].map(([k,c]) => (
                     <linearGradient key={k} id={`g-${k}`} x1="0" y1="0" x2="0" y2="1">
                       <stop offset="5%" stopColor={c} stopOpacity={0.12} /><stop offset="95%" stopColor={c} stopOpacity={0} />
                     </linearGradient>
@@ -132,7 +132,7 @@ export default function VitalSignsPage() {
                 <RTooltip contentStyle={{ borderRadius: 12, border: '1px solid #E2E8F0', fontSize: 12 }} />
                 <Legend wrapperStyle={{ fontSize: 12 }} />
                 <Area type="monotone" dataKey="Huyết áp" stroke="#DC2626" fill="url(#g-bp)" strokeWidth={2} dot={false} />
-                <Area type="monotone" dataKey="Nhịp tim" stroke="#2563EB" fill="url(#g-hr)" strokeWidth={2} dot={false} />
+                <Area type="monotone" dataKey="Nhịp tim" stroke="#0D9488" fill="url(#g-hr)" strokeWidth={2} dot={false} />
                 <Area type="monotone" dataKey="SpO2" stroke="#059669" fill="url(#g-spo2)" strokeWidth={2} dot={false} />
               </AreaChart>
             </ResponsiveContainer>

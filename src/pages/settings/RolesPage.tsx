@@ -1,11 +1,7 @@
-import { useState } from 'react';
 import {
   Card, Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
-  IconButton, CircularProgress, Dialog, DialogTitle, DialogContent, DialogActions,
-  Button, TextField, Grid, Tooltip, Chip, Box
+  CircularProgress, Chip
 } from '@mui/material';
-import { Edit, Delete } from '@mui/icons-material';
-import { useForm } from 'react-hook-form';
 import { useGetRolesQuery } from '../../store/api/apiSlice';
 import PageHeader from '../../components/common/PageHeader';
 
@@ -15,10 +11,10 @@ export default function RolesPage() {
 
   return (
     <PageHeader title="Phân quyền">
-      <Card sx={{ borderRadius: 2, boxShadow: '0 2px 10px rgba(0,0,0,0.08)' }}>
+      <Card sx={{ borderRadius: '20px', border: '1px solid #E2E8F0', boxShadow: '0 2px 4px rgba(15,23,42,0.04), 0 12px 28px rgba(15,23,42,0.06)', overflow: 'hidden' }}>
         <TableContainer>
           <Table>
-            <TableHead sx={{ bgcolor: '#f5f5f5' }}>
+            <TableHead>
               <TableRow>
                 <TableCell>ID</TableCell>
                 <TableCell>Tên vai trò</TableCell>
@@ -26,9 +22,9 @@ export default function RolesPage() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {isLoading ? <TableRow><TableCell colSpan={3} align="center"><CircularProgress /></TableCell></TableRow>
+              {isLoading ? <TableRow><TableCell colSpan={3} align="center" sx={{ py: 7 }}><CircularProgress size={30} sx={{ color: '#0D9488' }} /></TableCell></TableRow>
                 : roles.map((r) => (
-                  <TableRow key={r.id} hover>
+                  <TableRow key={r.id} sx={{ '& td': { borderBottom: '1px solid #EDF1F5', py: 1.7, fontSize: 13.5 }, '&:hover td': { bgcolor: 'rgba(13,148,136,0.045)' } }}>
                     <TableCell>{r.id}</TableCell>
                     <TableCell><Chip label={r.name} color="primary" size="small" /></TableCell>
                     <TableCell>{r.description || '-'}</TableCell>

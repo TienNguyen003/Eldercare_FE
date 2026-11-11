@@ -1,33 +1,42 @@
 import { useState } from 'react';
-import { Box, Container, Typography, Grid, Card, CardContent, TextField, Button, Alert, Avatar, Chip } from '@mui/material';
+import { Box, Container, Typography, Grid, Card, CardContent, TextField, Button, Alert, Avatar, CircularProgress } from '@mui/material';
 import { Phone, Email, LocationOn, AccessTime, Send } from '@mui/icons-material';
+import { useSubmitContactMessageMutation } from '../../store/api/apiSlice';
+import PageHero from '../../components/public/PageHero';
 
 const contactInfo = [
-  { icon: <Phone />, title: 'Điện thoại', value: '1800 1234', sub: 'Miễn phí, 24/7', color: '#2563EB' },
-  { icon: <Email />, title: 'Email', value: 'support@eldercare.vn', sub: 'Phản hồi trong 2 giờ', color: '#7C3AED' },
+  { icon: <Phone />, title: 'Điện thoại', value: '1800 1234', sub: 'Miễn phí, 24/7', color: '#0D9488' },
+  { icon: <Email />, title: 'Email', value: 'support@eldercare.vn', sub: 'Phản hồi trong 2 giờ', color: '#10B981' },
   { icon: <LocationOn />, title: 'Địa chỉ', value: '123 Nguyễn Huệ, Q.1', sub: 'TP. Hồ Chí Minh', color: '#059669' },
   { icon: <AccessTime />, title: 'Giờ làm việc', value: 'Thứ 2 - Thứ 7', sub: '8:00 - 17:30', color: '#DC2626' },
 ];
 
 export default function ContactPage() {
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState('');
   const [form, setForm] = useState({ name: '', email: '', phone: '', message: '' });
+  const [submitMessage, { isLoading }] = useSubmitContactMessageMutation();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+    setError('');
+    try {
+      await submitMessage(form).unwrap();
+      setSubmitted(true);
+    } catch {
+      setError('Lỗi gửi yêu cầu. Vui lòng thử lại.');
+    }
   };
 
   return (
     <Box>
       {/* Hero */}
-      <Box sx={{ background: 'linear-gradient(135deg, #0F172A, #1E3A5F)', py: 10, textAlign: 'center' }}>
-        <Container maxWidth="md">
-          <Chip label="Liên hệ" sx={{ bgcolor: 'rgba(37,99,235,0.2)', color: '#93C5FD', fontWeight: 600, mb: 3 }} />
-          <Typography variant="h2" fontWeight={800} color="#fff" mb={2}>Chúng tôi luôn sẵn sàng hỗ trợ</Typography>
-          <Typography color="#94A3B8" fontSize={17}>Liên hệ ngay để được tư vấn miễn phí về dịch vụ chăm sóc người cao tuổi</Typography>
-        </Container>
-      </Box>
+      <PageHero
+        chip="Liên hệ"
+        title="Chúng tôi luôn sẵn sàng hỗ trợ"
+        subtitle="Liên hệ ngay để được tư vấn miễn phí về dịch vụ chăm sóc người cao tuổi"
+        image="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=1600&q=75"
+      />
 
       <Box sx={{ py: 10, bgcolor: '#F8FAFC' }}>
         <Container maxWidth="lg">
@@ -53,12 +62,15 @@ export default function ContactPage() {
                 ))}
               </Box>
 
-              {/* Map placeholder */}
-              <Box sx={{ height: 200, borderRadius: '16px', background: 'linear-gradient(135deg, #1E293B, #334155)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #E2E8F0' }}>
-                <Box sx={{ textAlign: 'center' }}>
-                  <LocationOn sx={{ fontSize: 40, color: '#60A5FA' }} />
-                  <Typography color="#94A3B8" fontSize={13} mt={1}>123 Nguyễn Huệ, Quận 1, TP.HCM</Typography>
-                </Box>
+              {/* Bản đồ thật (Google Maps embed) */}
+              <Box sx={{ height: 220, borderRadius: '16px', overflow: 'hidden', border: '1px solid #E2E8F0', boxShadow: '0 10px 30px rgba(11,18,32,0.08)' }}>
+                <Box
+                  component="iframe"
+                  title="Bản đồ văn phòng ElderCare"
+                  src="https://maps.google.com/maps?q=123%20Nguy%E1%BB%85n%20Hu%E1%BB%87%2C%20Qu%E1%BA%ADn%201%2C%20TP.%20HCM&t=&z=15&ie=UTF8&iwloc=&output=embed"
+                  sx={{ width: '100%', height: '100%', border: 0, display: 'block' }}
+                  loading="lazy"
+                />
               </Box>
             </Grid>
 
@@ -68,6 +80,8 @@ export default function ContactPage() {
                 <CardContent sx={{ p: 4 }}>
                   <Typography variant="h5" fontWeight={700} mb={0.5}>Gửi tin nhắn cho chúng tôi</Typography>
                   <Typography color="text.secondary" fontSize={14} mb={3}>Điền thông tin bên dưới, chúng tôi sẽ liên hệ trong 2 giờ</Typography>
+
+                  {error && <Alert severity="error" sx={{ mb: 2, borderRadius: '12px' }}>{error}</Alert>}
 
                   {submitted ? (
                     <Alert severity="success" sx={{ borderRadius: '12px' }}>
@@ -91,9 +105,9 @@ export default function ContactPage() {
                             value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} required />
                         </Grid>
                         <Grid item xs={12}>
-                          <Button fullWidth variant="contained" type="submit" size="large" endIcon={<Send />}
-                            sx={{ py: 1.8, fontWeight: 700, fontSize: 15, background: 'linear-gradient(135deg, #2563EB, #7C3AED)', borderRadius: '12px' }}>
-                            Gửi yêu cầu tư vấn
+                          <Button fullWidth variant="contained" type="submit" size="large" endIcon={<Send />} disabled={isLoading}
+                            sx={{ py: 1.8, fontWeight: 700, fontSize: 15, background: 'linear-gradient(135deg, #0D9488, #10B981)', borderRadius: '12px' }}>
+                            {isLoading ? <CircularProgress size={20} color="inherit" /> : 'Gửi yêu cầu tư vấn'}
                           </Button>
                         </Grid>
                       </Grid>

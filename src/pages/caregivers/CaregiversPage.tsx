@@ -21,7 +21,7 @@ const COLUMNS = [
   { key: 'actions', label: 'Thao tác', align: 'center' as const, width: 100 },
 ];
 
-const COLORS = ['#2563EB', '#7C3AED', '#059669', '#DC2626', '#D97706', '#6366F1'];
+const COLORS = ['#0D9488', '#10B981', '#059669', '#DC2626', '#D97706', '#0EA5E9'];
 
 export default function CaregiversPage() {
   const [page, setPage] = useState(0);

@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import {
   Card, Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
-  TablePagination, IconButton, CircularProgress, Dialog, DialogTitle,
-  DialogContent, DialogActions, Button, TextField, MenuItem, Grid, Tooltip
+  IconButton, CircularProgress, TextField, MenuItem, Grid, Tooltip
 } from '@mui/material';
 import { Edit, Delete } from '@mui/icons-material';
 import { useForm, Controller } from 'react-hook-form';
@@ -15,6 +14,9 @@ import {
 import type { MedicationSchedule } from '../../types';
 import PageHeader from '../../components/common/PageHeader';
 import StatusChip from '../../components/common/StatusChip';
+import FormDialog from '../../components/common/FormDialog';
+import ConfirmDialog from '../../components/common/ConfirmDialog';
+import EmptyHint from '../../components/common/EmptyHint';
 
 export default function MedicationSchedulesPage() {
   const [selectedElderly, setSelectedElderly] = useState<number>(0);
@@ -45,17 +47,17 @@ export default function MedicationSchedulesPage() {
 
   return (
     <PageHeader title="Lịch uống thuốc" action={{ label: 'Thêm lịch', onClick: openCreate }}>
-      <Card sx={{ borderRadius: 2, boxShadow: '0 2px 10px rgba(0,0,0,0.08)', mb: 2, p: 2 }}>
-        <TextField select label="Chọn người già" value={selectedElderly} onChange={(e) => setSelectedElderly(Number(e.target.value))} size="small" sx={{ minWidth: 250 }}>
-          <MenuItem value={0}>-- Chọn người già --</MenuItem>
+      <Card sx={{ mb: 2.5, p: 2, borderRadius: '20px', bgcolor: '#FBFDFE', borderLeft: '4px solid #0D9488' }}>
+        <TextField select label="Chọn người cao tuổi" value={selectedElderly} onChange={(e) => setSelectedElderly(Number(e.target.value))} size="small" sx={{ minWidth: 250 }}>
+          <MenuItem value={0}>— Chọn người cao tuổi —</MenuItem>
           {elderlies.map((e) => <MenuItem key={e.id} value={e.id}>{e.fullName}</MenuItem>)}
         </TextField>
       </Card>
 
-      <Card sx={{ borderRadius: 2, boxShadow: '0 2px 10px rgba(0,0,0,0.08)' }}>
+      <Card sx={{ borderRadius: '20px', border: '1px solid #E2E8F0', boxShadow: '0 2px 4px rgba(15,23,42,0.04), 0 12px 28px rgba(15,23,42,0.06)', overflow: 'hidden' }}>
         <TableContainer>
           <Table>
-            <TableHead sx={{ bgcolor: '#f5f5f5' }}>
+            <TableHead>
               <TableRow>
                 <TableCell>Thuốc</TableCell>
                 <TableCell>Liều lượng</TableCell>
@@ -69,11 +71,11 @@ export default function MedicationSchedulesPage() {
             </TableHead>
             <TableBody>
               {!selectedElderly ? (
-                <TableRow><TableCell colSpan={8} align="center">Vui lòng chọn người già</TableCell></TableRow>
+                <EmptyHint colSpan={8} title="Chưa chọn người cao tuổi" description="Chọn người cao tuổi ở bộ lọc phía trên để xem lịch uống thuốc" />
               ) : isLoading ? (
-                <TableRow><TableCell colSpan={8} align="center"><CircularProgress /></TableCell></TableRow>
+                <TableRow><TableCell colSpan={8} align="center" sx={{ py: 7 }}><CircularProgress size={30} sx={{ color: '#0D9488' }} /></TableCell></TableRow>
               ) : schedules.map((s) => (
-                <TableRow key={s.id} hover>
+                <TableRow key={s.id} sx={{ '& td': { borderBottom: '1px solid #EDF1F5', py: 1.7, fontSize: 13.5 }, '&:hover td': { bgcolor: 'rgba(13,148,136,0.045)' } }}>
                   <TableCell sx={{ fontWeight: 500 }}>{s.medicationName || `#${s.medicationId}`}</TableCell>
                   <TableCell>{s.dosage}</TableCell>
                   <TableCell>{s.frequency}</TableCell>
@@ -82,8 +84,8 @@ export default function MedicationSchedulesPage() {
                   <TableCell>{s.endDate ? format(new Date(s.endDate), 'dd/MM/yyyy') : '-'}</TableCell>
                   <TableCell><StatusChip status={s.status} /></TableCell>
                   <TableCell align="center">
-                    <Tooltip title="Sửa"><IconButton size="small" color="warning" onClick={() => openEdit(s)}><Edit /></IconButton></Tooltip>
-                    <Tooltip title="Xóa"><IconButton size="small" color="error" onClick={() => setDeleteId(s.id)}><Delete /></IconButton></Tooltip>
+                    <Tooltip title="Sửa"><IconButton size="small" sx={{ bgcolor: 'rgba(245,158,11,0.12)', color: '#D97706', '&:hover': { bgcolor: 'rgba(245,158,11,0.22)' } }} onClick={() => openEdit(s)}><Edit /></IconButton></Tooltip>
+                    <Tooltip title="Xóa"><IconButton size="small" sx={{ bgcolor: 'rgba(239,68,68,0.12)', color: '#DC2626', '&:hover': { bgcolor: 'rgba(239,68,68,0.22)' } }} onClick={() => setDeleteId(s.id)}><Delete /></IconButton></Tooltip>
                   </TableCell>
                 </TableRow>
               ))}
@@ -92,14 +94,14 @@ export default function MedicationSchedulesPage() {
         </TableContainer>
       </Card>
 
-      <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} maxWidth="sm" fullWidth>
-        <DialogTitle>{editing ? 'Cập nhật lịch uống thuốc' : 'Thêm lịch uống thuốc'}</DialogTitle>
-        <DialogContent>
-          <form id="med-sched-form" onSubmit={handleSubmit(onSubmit)}>
-            <Grid container spacing={2} sx={{ mt: 0.5 }}>
+      <FormDialog open={dialogOpen} onClose={() => setDialogOpen(false)}
+        title={editing ? 'Cập nhật lịch uống thuốc' : 'Thêm lịch uống thuốc'}
+        formId="med-sched-form" submitLabel={editing ? 'Cập nhật' : 'Thêm'}>
+        <form id="med-sched-form" onSubmit={handleSubmit(onSubmit)}>
+            <Grid container spacing={2}>
               <Grid item xs={12}>
                 <Controller name="elderlyId" control={control} render={({ field }) => (
-                  <TextField select fullWidth label="Người già *" {...field}>
+                  <TextField select fullWidth label="Người cao tuổi *" {...field}>
                     {elderlies.map((e) => <MenuItem key={e.id} value={e.id}>{e.fullName}</MenuItem>)}
                   </TextField>
                 )} />
@@ -127,21 +129,11 @@ export default function MedicationSchedulesPage() {
               <Grid item xs={6}><TextField fullWidth label="Ngày kết thúc" type="date" InputLabelProps={{ shrink: true }} {...register('endDate')} /></Grid>
             </Grid>
           </form>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setDialogOpen(false)}>Hủy</Button>
-          <Button variant="contained" type="submit" form="med-sched-form">{editing ? 'Cập nhật' : 'Thêm'}</Button>
-        </DialogActions>
-      </Dialog>
+      </FormDialog>
 
-      <Dialog open={!!deleteId} onClose={() => setDeleteId(null)}>
-        <DialogTitle>Xác nhận xóa</DialogTitle>
-        <DialogContent>Xóa lịch uống thuốc này?</DialogContent>
-        <DialogActions>
-          <Button onClick={() => setDeleteId(null)}>Hủy</Button>
-          <Button variant="contained" color="error" onClick={async () => { await remove(deleteId!); setDeleteId(null); }}>Xóa</Button>
-        </DialogActions>
-      </Dialog>
+      <ConfirmDialog open={!!deleteId} onClose={() => setDeleteId(null)}
+        onConfirm={async () => { await remove(deleteId!); setDeleteId(null); }}
+        message="Xóa lịch uống thuốc này? Hành động này không thể hoàn tác." />
     </PageHeader>
   );
 }

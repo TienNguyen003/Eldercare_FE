@@ -2,11 +2,10 @@ import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
   Box, Card, CardContent, Grid, Typography, Tab, Tabs, Button, Chip,
-  CircularProgress, Avatar, IconButton, Divider, List, ListItem,
-  ListItemText, TextField, ListItemIcon,
+  CircularProgress, Avatar, IconButton, TextField,
 } from '@mui/material';
 import {
-  ArrowBack, Edit, Add, Delete, Favorite, Phone, MonitorHeart,
+  ArrowBack, Edit, Add, Delete, MonitorHeart,
   LocalPharmacy, Person, MedicalServices, ContactPhone, FolderOpen,
 } from '@mui/icons-material';
 import { format } from 'date-fns';
@@ -17,7 +16,9 @@ import {
 } from '../../store/api/apiSlice';
 import StatusChip from '../../components/common/StatusChip';
 import ConfirmDialog from '../../components/common/ConfirmDialog';
+import EmptyState from '../../components/common/EmptyState';
 import FormDialog from '../../components/common/FormDialog';
+import { docTypeLabel } from '../../utils/labels';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 import { useForm } from 'react-hook-form';
 
@@ -85,11 +86,11 @@ export default function ElderlyDetailPage() {
       </Button>
 
       {/* Profile header card */}
-      <Card sx={{ borderRadius: '20px', border: '1px solid #E2E8F0', mb: 3, overflow: 'hidden', boxShadow: 'none' }}>
-        <Box sx={{ height: 6, background: 'linear-gradient(135deg, #2563EB, #7C3AED)' }} />
+      <Card sx={{ borderRadius: '20px', border: '1px solid #E2E8F0', mb: 3, overflow: 'hidden', boxShadow: '0 2px 4px rgba(15,23,42,0.04), 0 12px 28px rgba(15,23,42,0.06)' }}>
+        <Box sx={{ height: 6, background: 'linear-gradient(135deg, #0D9488, #10B981)' }} />
         <CardContent sx={{ p: 3 }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 3, flexWrap: 'wrap' }}>
-            <Avatar sx={{ width: 80, height: 80, background: 'linear-gradient(135deg, #2563EB, #7C3AED)', fontSize: 28, fontWeight: 800 }}>
+            <Avatar sx={{ width: 80, height: 80, background: 'linear-gradient(135deg, #0D9488, #10B981)', fontSize: 28, fontWeight: 800 }}>
               {elderly?.fullName?.[0]}
             </Avatar>
             <Box sx={{ flex: 1 }}>
@@ -120,15 +121,15 @@ export default function ElderlyDetailPage() {
       </Card>
 
       {/* Tabs */}
-      <Card sx={{ borderRadius: '20px', border: '1px solid #E2E8F0', boxShadow: 'none' }}>
+      <Card sx={{ borderRadius: '20px', border: '1px solid #E2E8F0', boxShadow: '0 2px 4px rgba(15,23,42,0.04), 0 12px 28px rgba(15,23,42,0.06)' }}>
         <Tabs
           value={tab} onChange={(_, v) => setTab(v)}
           variant="scrollable" scrollButtons="auto"
           sx={{
             px: 2, borderBottom: '1px solid #F1F5F9',
             '& .MuiTab-root': { minHeight: 56, fontWeight: 600, fontSize: 13, textTransform: 'none', color: '#64748B', gap: 0.8 },
-            '& .Mui-selected': { color: '#2563EB' },
-            '& .MuiTabs-indicator': { background: 'linear-gradient(135deg, #2563EB, #7C3AED)', borderRadius: '2px', height: 3 },
+            '& .Mui-selected': { color: '#0D9488' },
+            '& .MuiTabs-indicator': { background: 'linear-gradient(135deg, #0D9488, #10B981)', borderRadius: '2px', height: 3 },
           }}
         >
           {TABS.map((t) => <Tab key={t.label} label={t.label} icon={t.icon} iconPosition="start" />)}
@@ -177,7 +178,7 @@ export default function ElderlyDetailPage() {
                 <Box sx={{ display: 'flex', gap: 2, mb: 3, flexWrap: 'wrap' }}>
                   {[
                     { label: `${vitalSigns[vitalSigns.length - 1]?.bloodPressureSystolic}/${vitalSigns[vitalSigns.length - 1]?.bloodPressureDiastolic} mmHg`, title: 'Huyết áp', color: '#DC2626', bg: '#FEF2F2' },
-                    { label: `${vitalSigns[vitalSigns.length - 1]?.heartRate} bpm`, title: 'Nhịp tim', color: '#2563EB', bg: '#EFF6FF' },
+                    { label: `${vitalSigns[vitalSigns.length - 1]?.heartRate} bpm`, title: 'Nhịp tim', color: '#0D9488', bg: '#EFF6FF' },
                     { label: `${vitalSigns[vitalSigns.length - 1]?.oxygenSaturation}%`, title: 'SpO2', color: '#059669', bg: '#ECFDF5' },
                   ].map((item) => (
                     <Box key={item.title} sx={{ p: 2, bgcolor: item.bg, borderRadius: '14px', minWidth: 130 }}>
@@ -194,7 +195,7 @@ export default function ElderlyDetailPage() {
                   <ResponsiveContainer width="100%" height={240}>
                     <AreaChart data={chartData}>
                       <defs>
-                        {[['bp', '#DC2626'], ['hr', '#2563EB'], ['spo2', '#059669']].map(([k, c]) => (
+                        {[['bp', '#DC2626'], ['hr', '#0D9488'], ['spo2', '#059669']].map(([k, c]) => (
                           <linearGradient key={k} id={`grad-${k}`} x1="0" y1="0" x2="0" y2="1">
                             <stop offset="5%" stopColor={c} stopOpacity={0.1} />
                             <stop offset="95%" stopColor={c} stopOpacity={0} />
@@ -206,13 +207,18 @@ export default function ElderlyDetailPage() {
                       <YAxis tick={{ fontSize: 12 }} />
                       <Tooltip contentStyle={{ borderRadius: 12, border: '1px solid #E2E8F0' }} />
                       <Area type="monotone" dataKey="Huyết áp" stroke="#DC2626" fill="url(#grad-bp)" strokeWidth={2} />
-                      <Area type="monotone" dataKey="Nhịp tim" stroke="#2563EB" fill="url(#grad-hr)" strokeWidth={2} />
+                      <Area type="monotone" dataKey="Nhịp tim" stroke="#0D9488" fill="url(#grad-hr)" strokeWidth={2} />
                       <Area type="monotone" dataKey="SpO2" stroke="#059669" fill="url(#grad-spo2)" strokeWidth={2} />
                     </AreaChart>
                   </ResponsiveContainer>
                 </Box>
               ) : (
-                <Typography color="text.secondary" textAlign="center" py={4}>Chưa có dữ liệu chỉ số sức khỏe</Typography>
+                <EmptyState
+                  icon={<MonitorHeart />}
+                  title="Chưa có dữ liệu chỉ số sức khỏe"
+                  description="Các chỉ số sinh tồn sẽ hiển thị tại đây sau khi được nhân viên chăm sóc ghi nhận"
+                  minHeight={180}
+                />
               )}
             </Box>
           )}
@@ -224,7 +230,7 @@ export default function ElderlyDetailPage() {
                 <Typography fontWeight={700} fontSize={15}>Liên hệ khẩn cấp ({contacts.length})</Typography>
                 <Button startIcon={<Add />} variant="contained" size="small"
                   onClick={() => { reset(); setContactDialog(true); }}
-                  sx={{ borderRadius: '10px', background: 'linear-gradient(135deg, #2563EB, #7C3AED)', fontWeight: 700 }}>
+                  sx={{ borderRadius: '10px', background: 'linear-gradient(135deg, #0D9488, #10B981)', fontWeight: 700 }}>
                   Thêm liên hệ
                 </Button>
               </Box>
@@ -234,12 +240,12 @@ export default function ElderlyDetailPage() {
                 <Grid container spacing={2}>
                   {contacts.map((c) => (
                     <Grid item xs={12} sm={6} key={c.id}>
-                      <Box sx={{ p: 2.5, bgcolor: '#F8FAFC', borderRadius: '16px', border: '1px solid #E2E8F0', display: 'flex', alignItems: 'center', gap: 2 }}>
-                        <Avatar sx={{ bgcolor: '#EFF6FF', color: '#2563EB', fontWeight: 700 }}>{c.name?.[0]}</Avatar>
+                      <Box sx={{ p: 2.5, bgcolor: '#F8FAFC', borderRadius: '20px', border: '1px solid #E2E8F0', display: 'flex', alignItems: 'center', gap: 2 }}>
+                        <Avatar sx={{ bgcolor: '#EFF6FF', color: '#0D9488', fontWeight: 700 }}>{c.name?.[0]}</Avatar>
                         <Box sx={{ flex: 1 }}>
                           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.3 }}>
                             <Typography fontWeight={700} fontSize={14}>{c.name}</Typography>
-                            {c.isPrimary && <Chip label="Chính" size="small" sx={{ bgcolor: '#EFF6FF', color: '#2563EB', fontWeight: 700, fontSize: 10, height: 18 }} />}
+                            {c.isPrimary && <Chip label="Chính" size="small" sx={{ bgcolor: '#EFF6FF', color: '#0D9488', fontWeight: 700, fontSize: 10, height: 18 }} />}
                           </Box>
                           <Typography fontSize={12} color="text.secondary">{c.relationship} · {c.phone}</Typography>
                         </Box>
@@ -284,11 +290,11 @@ export default function ElderlyDetailPage() {
                     <Grid item xs={12} sm={6} key={d.id}>
                       <Box sx={{ p: 2, bgcolor: '#F8FAFC', borderRadius: '14px', border: '1px solid #E2E8F0', display: 'flex', alignItems: 'center', gap: 2 }}>
                         <Box sx={{ width: 40, height: 40, borderRadius: '10px', bgcolor: '#EFF6FF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                          <FolderOpen sx={{ color: '#2563EB', fontSize: 20 }} />
+                          <FolderOpen sx={{ color: '#0D9488', fontSize: 20 }} />
                         </Box>
                         <Box>
                           <Typography fontWeight={600} fontSize={13.5}>{d.title}</Typography>
-                          <Typography fontSize={12} color="text.secondary">{d.type} · {d.uploadedAt ? format(new Date(d.uploadedAt), 'dd/MM/yyyy') : ''}</Typography>
+                          <Typography fontSize={12} color="text.secondary">{docTypeLabel(d.type)} · {d.uploadedAt ? format(new Date(d.uploadedAt), 'dd/MM/yyyy') : ''}</Typography>
                         </Box>
                       </Box>
                     </Grid>

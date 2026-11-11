@@ -52,14 +52,14 @@ export default function MedicationsPage() {
         return (
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
             <Box sx={{ width: 34, height: 34, borderRadius: '10px', bgcolor: '#EFF6FF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <LocalPharmacy sx={{ fontSize: 16, color: '#2563EB' }} />
+              <LocalPharmacy sx={{ fontSize: 16, color: '#0D9488' }} />
             </Box>
             <Typography fontWeight={600} fontSize={13.5}>{row.name}</Typography>
           </Box>
         );
       case 'category':
         return row.category ? (
-          <Chip label={row.category} size="small" sx={{ bgcolor: '#F5F3FF', color: '#7C3AED', fontWeight: 600, fontSize: 11, borderRadius: '8px' }} />
+          <Chip label={row.category} size="small" sx={{ bgcolor: '#F5F3FF', color: '#10B981', fontWeight: 600, fontSize: 11, borderRadius: '8px' }} />
         ) : '-';
       case 'unit':
         return row.unit ? (

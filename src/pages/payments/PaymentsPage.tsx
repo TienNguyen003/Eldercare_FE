@@ -80,9 +80,9 @@ export default function PaymentsPage() {
 
   const summaryCards = [
     { label: 'Tổng doanh thu', value: `${fmt(totalRevenue)} ₫`, icon: <TrendingUp />, color: '#059669', bg: '#ECFDF5' },
-    { label: 'Đã thanh toán', value: paidCount, icon: <CheckCircle />, color: '#2563EB', bg: '#EFF6FF' },
+    { label: 'Đã thanh toán', value: paidCount, icon: <CheckCircle />, color: '#0D9488', bg: '#EFF6FF' },
     { label: 'Chờ thanh toán', value: pendingCount, icon: <PendingActions />, color: '#D97706', bg: '#FFFBEB' },
-    { label: 'Tổng giao dịch', value: total, icon: <PayIcon />, color: '#7C3AED', bg: '#F5F3FF' },
+    { label: 'Tổng giao dịch', value: total, icon: <PayIcon />, color: '#10B981', bg: '#F5F3FF' },
   ];
 
   return (
@@ -90,7 +90,7 @@ export default function PaymentsPage() {
       <Grid container spacing={2.5} mb={3}>
         {summaryCards.map((s) => (
           <Grid item xs={6} md={3} key={s.label}>
-            <Card sx={{ borderRadius: '16px', border: '1px solid #E2E8F0', boxShadow: 'none' }}>
+            <Card sx={{ borderRadius: '20px', border: '1px solid #E2E8F0', boxShadow: '0 2px 4px rgba(15,23,42,0.04), 0 12px 28px rgba(15,23,42,0.06)' }}>
               <CardContent sx={{ p: 2.5, '&:last-child': { pb: 2.5 } }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                   <Box>
@@ -145,7 +145,7 @@ export default function PaymentsPage() {
             <Grid item xs={12}>
               <Controller name="servicePackageId" control={control} render={({ field }) => (
                 <TextField select fullWidth label="Gói dịch vụ" {...field}>
-                  <MenuItem value="">-- Không có --</MenuItem>
+                  <MenuItem value="">— Không có —</MenuItem>
                   {packages.map((p) => <MenuItem key={p.id} value={p.id}>{p.name}</MenuItem>)}
                 </TextField>
               )} />
